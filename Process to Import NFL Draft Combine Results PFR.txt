@@ -1,0 +1,7 @@
+1. Compile data combine from Pro Football Reference, going year by year.
+  https://www.pro-football-reference.com/draft/
+  Result: nfl_draft_combine_results_pfr_flat
+2. Separate the file via CSV to various columns
+  Result: nfl_draft_combine_results_pfr
+3. Import into DB
+  Result: temp.nfl_draft_combine_results_pfr
