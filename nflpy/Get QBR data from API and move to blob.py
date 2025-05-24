@@ -6,6 +6,7 @@ Created on Wed May  7 17:28:55 2025
 PURPOSE:
     Get data from NFLPY API (QBR-related endpoint) and transfer to Azure Blob
 
+
 NOTES:
 
     ## 2025-05-08_1237
@@ -48,15 +49,24 @@ qbr_data_week = nfl.import_qbr(level = 'nfl', frequency = 'weekly')
 #%% TRANSFER DATA TO BLOB
 
 
-## write data to blob
+## create clients
 blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string) # create the BlobServiceClient
 container_client = blob_service_client.get_container_client(container_name) # get the container client
-csv_buffer = StringIO() # convert DataFrame to CSV (in memory, no disk needed)
-qbr_data_season.to_csv(csv_buffer, index=False)  # index=False if you don't want pandas index column
 
 
-# upload the CSV text to blob
-blob_client = container_client.get_blob_client(week_blob_name)
-blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
+## upload season data
+csv_buffer_season = StringIO() # convert DataFrame to CSV (in memory, no disk needed)
+qbr_data_season.to_csv(csv_buffer_season, index=False)  # index=False if you don't want pandas index column
 blob_client = container_client.get_blob_client(season_blob_name)
-blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
+blob_client.upload_blob(csv_buffer_season.getvalue(), overwrite=True)
+
+
+## upload season data
+csv_buffer_week = StringIO() # convert DataFrame to CSV (in memory, no disk needed)
+qbr_data_week.to_csv(csv_buffer_week, index=False)  # index=False if you don't want pandas index column
+blob_client = container_client.get_blob_client(week_blob_name)
+blob_client.upload_blob(csv_buffer_week.getvalue(), overwrite=True)
+
+
+
+
