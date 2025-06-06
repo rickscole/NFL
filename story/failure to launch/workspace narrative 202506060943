@@ -1,0 +1,200 @@
+
+
+
+if object_id('temp.nfl_failure_to_launch_00', 'U') is not null
+drop table temp.nfl_failure_to_launch_00; 
+if object_id('temp.nfl_failure_to_launch_02', 'U') is not null
+drop table temp.nfl_failure_to_launch_02; 
+if object_id('temp.nfl_failure_to_launch_03', 'U') is not null
+drop table temp.nfl_failure_to_launch_03; 
+if object_id('qbrftl.nfl_qualifying_qb', 'U') is not null
+drop table qbrftl.nfl_qualifying_qb; 
+
+
+-- create schema qbrftl
+
+-- data with row ID for all QBs with 20 games under their belt
+select 
+    a.player_id
+    , a.name_display
+    , a.season
+    , a.week_num 
+    , a.qbr_total
+    , season_week = concat(a.season, ', ', a.week_text)
+    , player_game_id = row_number() over(partition by a.player_id, a.name_display order by a.season asc, (case when a.season_type = 'Regular' then 0 else 1 end) asc, a.week_num asc)
+into temp.nfl_failure_to_launch_00
+from nflpy.nfl_qbr_week a 
+inner join (select name_display, the_count = count(*) from nflpy.nfl_qbr_week group by name_display having count(*) >= 20) b on a.name_display = b.name_display
+where 1 = 1 
+    -- these guys have been around for a bit too long to count (as in, pre 2006)
+    and a.player_id not in (8416, 5536, 112, 4459, 3636, 1753, 2580, 5526, 2026, 1682, 5615, 2549, 1428, 2330
+    , 1575, 8520, 3609, 1693, 1383, 2149, 4480, 734, 2299, 5547, 733, 3531, 1398, 3529)
+
+-- some consilidation here due to memory concerns ...
+-- but basically, the list of all "successful" QBs
+select player_id, name_display, number_of_regimes = count(*)
+into qbrftl.nfl_qualifying_qb
+from 
+(
+select
+    distinct
+    b.player_id
+    , a.name_display
+    , b.start_season_week 
+    , b.end_season_week
+    , b.difference_in_games
+    -- , median_qbr = percentile_cont(0.5) within group (order by a.qbr_total)over (partition by b.player_id, a.name_display, b.start_season, b.end_season, b.difference_in_years)
+    , avg_qbr = avg(a.qbr_total)
+-- into temp.nfl_best_regimes_02
+from temp.nfl_failure_to_launch_00 a 
+inner join 
+(
+    select
+    a.player_id
+    -- , a.name_display 
+    , a.player_game_id
+    , start_season_week = b.season_week
+    , end_season_week = a.season_week 
+    , start_player_game_id = b.player_game_id
+    , end_player_game_id = a.player_game_id
+    , difference_in_games = a.player_game_id - b.player_game_id + 1
+    from temp.nfl_failure_to_launch_00 a 
+    inner join temp.nfl_failure_to_launch_00 b on 1 = 1 
+    and a.player_id = b.player_id 
+    and a.player_game_id >= b.player_game_id
+    where 1 = 1
+    and (a.player_game_id - b.player_game_id + 1) <= 20 
+) b on 1 = 1
+    and a.player_id = b.player_id
+    and a.player_game_id >= b.start_player_game_id 
+    and a.player_game_id <= b.end_player_game_id
+where 1 = 1
+    and b.difference_in_games = 20
+    -- these guys have been around for a bit too long to count (as in, pre 2006)
+    and b.player_id not in (8416, 5536, 112, 4459, 3636, 1753, 2580, 5526, 2026, 1682, 5615, 2549, 1428, 2330
+    , 1575, 8520, 3609, 1693, 1383, 2149, 4480, 734, 2299, 5547, 733, 3531, 1398, 3529)
+group by 
+    b.player_id
+    , a.name_display
+    , b.start_season_week 
+    , b.end_season_week
+    , b.difference_in_games
+having 
+    avg(a.qbr_total) >= 60
+)
+c
+group by 
+player_id
+, name_display
+
+
+-- all games for Select QBs
+select 
+    a.*
+into temp.nfl_failure_to_launch_02
+from temp.nfl_failure_to_launch_00 a 
+inner join qbrftl.nfl_qualifying_qb b on 1 = 1 
+    and a.player_id = b.player_id
+    and a.name_display = b.name_display 
+
+
+-- regimes for select QBs
+select
+    distinct
+    b.player_id
+    , a.name_display
+    , b.start_season_week 
+    , b.end_season_week
+    , b.difference_in_games
+    , b.start_player_game_id
+    , b.end_player_game_id
+    -- , median_qbr = percentile_cont(0.5) within group (order by a.qbr_total)over (partition by b.player_id, a.name_display, b.start_season, b.end_season, b.difference_in_years)
+    , avg_qbr = avg(a.qbr_total)
+into temp.nfl_failure_to_launch_03
+from temp.nfl_failure_to_launch_02 a 
+inner join 
+(
+    select
+    a.player_id
+    -- , a.name_display 
+    , a.player_game_id
+    , start_season_week = b.season_week
+    , end_season_week = a.season_week 
+    , start_player_game_id = b.player_game_id
+    , end_player_game_id = a.player_game_id
+    , difference_in_games = a.player_game_id - b.player_game_id + 1
+    from temp.nfl_failure_to_launch_02 a 
+    inner join temp.nfl_failure_to_launch_02 b on 1 = 1 
+    and a.player_id = b.player_id 
+    and a.player_game_id >= b.player_game_id
+    where 1 = 1
+    and (a.player_game_id - b.player_game_id + 1) <= 10 
+) b on 1 = 1
+    and a.player_id = b.player_id
+    and a.player_game_id >= b.start_player_game_id 
+    and a.player_game_id <= b.end_player_game_id
+where 1 = 1
+    and b.difference_in_games = 10
+group by 
+    b.player_id
+    , a.name_display
+    , b.start_season_week 
+    , b.end_season_week
+    , b.difference_in_games
+    , b.start_player_game_id
+    , b.end_player_game_id
+
+
+select 
+    a.player_id 
+    , a.name_display 
+    , min_start_player_game_id = min(a.start_player_game_id)
+from temp.nfl_failure_to_launch_03 a
+where 1 = 1
+    and a.avg_qbr >= 60
+group by 
+    a.player_id 
+    , a.name_display 
+
+/*
+if object_id('temp.nfl_failure_to_launch_00', 'U') is not null
+drop table temp.nfl_failure_to_launch_00; 
+if object_id('temp.nfl_failure_to_launch_02', 'U') is not null
+drop table temp.nfl_failure_to_launch_02; 
+if object_id('temp.nfl_failure_to_launch_03', 'U') is not null
+drop table temp.nfl_failure_to_launch_03; 
+if object_id('qbrftl.nfl_qualifying_qb', 'U') is not null
+drop table qbrftl.nfl_qualifying_qb; 
+*/
+
+
+
+/*
+select a.*
+, is_player_successful = case when b.player_id is not null then 1 else 0 end 
+, is_player_too_old = case when c.player_id is not null then 1 else 0 end
+from 
+(select player_id, name_display, the_count = count(*) from nflpy.nfl_qbr_week group by player_id, name_display having count(*) >= 20) a
+left join qbrftl.nfl_qualifying_qb b on a.player_id = b.player_id
+left join 
+(
+select distinct player_id, name_display
+from nflpy.nfl_qbr_week
+where player_id
+in (8416, 5536, 112, 4459, 3636, 1753, 2580, 5526, 2026, 1682, 5615, 2549, 1428, 2330
+, 1575, 8520, 3609, 1693, 1383, 2149, 4480, 734, 2299, 5547, 733, 3531, 1398, 3529)
+) c on a.player_id = c.player_id
+*/
+
+
+
+select 
+    a.player_id 
+    , a.name_display 
+    , the_count = count(*)
+from nflpy.nfl_qbr_week a
+where a.player_id in (8416, 5536, 112, 4459, 3636, 1753, 2580, 5526, 2026, 1682, 5615, 2549, 1428, 2330
+, 1575, 8520, 3609, 1693, 1383, 2149, 4480, 734, 2299, 5547, 733, 3531, 1398, 3529)
+group by 
+     a.player_id 
+    , a.name_display
