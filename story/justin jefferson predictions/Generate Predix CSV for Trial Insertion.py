@@ -13,6 +13,9 @@ NOTES:
     202506281435
     Credentials link
     https://docs.google.com/document/d/1dmTtsvDZdA64_WlaRRuijPj8PW4QogTSZvbWuQJLwRI/edit?tab=t.0
+    
+    202506301000
+    At least for this project, I want train and test to be sequential, so Ill invoke this method
 
 
 @author: rcole
@@ -79,7 +82,13 @@ x = df[[c for c in df.columns if c in x_columns]]
 
 
 ## divide dataset into train and test
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = test_size, random_state = 42)
+#202506301000
+#x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = test_size, random_state = 42)
+split_index = int(len(df) * (1 - test_size))
+y_train = y.iloc[:split_index].copy()
+x_train = x.iloc[:split_index].copy()
+y_test = y.iloc[split_index:].copy()
+x_test = x.iloc[split_index:].copy()
 
 
 #%% CREATE MODEL
@@ -90,6 +99,7 @@ model = LinearRegression(fit_intercept = False)
 model.fit(x_train, y_train)
 y_fit = list(model.predict(x_train))
 y_predix = list(model.predict(x_test))
+#r2 = r2_score(y_test, y_predix)
  
 
 ## define variable and create lists
