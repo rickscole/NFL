@@ -1,0 +1,33 @@
+id,abbreviation,display_name,short_display_name,name,nickname,location
+22,ARI,Arizona Cardinals,Cardinals,Cardinals,Cardinals,Arizona
+1,ATL,Atlanta Falcons,Falcons,Falcons,Falcons,Atlanta
+33,BAL,Baltimore Ravens,Ravens,Ravens,Ravens,Baltimore
+2,BUF,Buffalo Bills,Bills,Bills,Bills,Buffalo
+29,CAR,Carolina Panthers,Panthers,Panthers,Panthers,Carolina
+3,CHI,Chicago Bears,Bears,Bears,Bears,Chicago
+4,CIN,Cincinnati Bengals,Bengals,Bengals,Bengals,Cincinnati
+5,CLE,Cleveland Browns,Browns,Browns,Browns,Cleveland
+6,DAL,Dallas Cowboys,Cowboys,Cowboys,Cowboys,Dallas
+7,DEN,Denver Broncos,Broncos,Broncos,Broncos,Denver
+8,DET,Detroit Lions,Lions,Lions,Lions,Detroit
+9,GB,Green Bay Packers,Packers,Packers,Packers,Green Bay
+34,HOU,Houston Texans,Texans,Texans,Texans,Houston
+11,IND,Indianapolis Colts,Colts,Colts,Colts,Indianapolis
+30,JAX,Jacksonville Jaguars,Jaguars,Jaguars,Jaguars,Jacksonville
+12,KC,Kansas City Chiefs,Chiefs,Chiefs,Chiefs,Kansas City
+13,LV,Las Vegas Raiders,Raiders,Raiders,Raiders,Las Vegas
+24,LAC,Los Angeles Chargers,Chargers,Chargers,Chargers,Los Angeles
+14,LAR,Los Angeles Rams,Rams,Rams,Rams,Los Angeles
+15,MIA,Miami Dolphins,Dolphins,Dolphins,Dolphins,Miami
+16,MIN,Minnesota Vikings,Vikings,Vikings,Vikings,Minnesota
+17,NE,New England Patriots,Patriots,Patriots,Patriots,New England
+18,NO,New Orleans Saints,Saints,Saints,Saints,New Orleans
+19,NYG,New York Giants,Giants,Giants,Giants,New York
+20,NYJ,New York Jets,Jets,Jets,Jets,New York
+21,PHI,Philadelphia Eagles,Eagles,Eagles,Eagles,Philadelphia
+23,PIT,Pittsburgh Steelers,Steelers,Steelers,Steelers,Pittsburgh
+25,SF,San Francisco 49ers,49ers,49ers,49ers,San Francisco
+26,SEA,Seattle Seahawks,Seahawks,Seahawks,Seahawks,Seattle
+27,TB,Tampa Bay Buccaneers,Buccaneers,Buccaneers,Buccaneers,Tampa Bay
+10,TEN,Tennessee Titans,Titans,Titans,Titans,Tennessee
+28,WSH,Washington Commanders,Commanders,Commanders,Commanders,Washington
