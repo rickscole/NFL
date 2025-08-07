@@ -32,9 +32,13 @@ headers = {
 #seasons = list(range(1998, 2025 + 1))
 #seasons = list(range(1922, 2025 + 1))
 #seasons = list(range(2024, 2024 + 1))
-seasons = list(range(1997, 1997 + 1))
+#seasons = list(range(1997, 1997 + 1))
+#seasons = list(range(1996, 1996 + 1))
+#seasons = list(range(1997, 1997 + 1))
+seasons = list(range(1998, 2025 + 1))
 game_id_list = []
 season_list = []
+matchup_list = []
 for season in seasons:
     
     print(season)
@@ -50,17 +54,22 @@ for season in seasons:
     for game in json_loads['events']: 
         if len(game) > 0:
             game_id = game['id']
+            matchup = game['shortName']
             
             game_id_list.append(game_id)
             season_list.append(season)
+            matchup_list.append(matchup)
     
     #number_of_games = len(json_loads['events'])
     #season_list.extend([season] * number_of_games)
 
 
-df = pd.DataFrame({ 'external_id' : game_id_list, 'season' : season_list})
+df = pd.DataFrame({ 'external_id' : game_id_list, 'season' : season_list, 'matchup' : matchup_list})
 #df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_01.csv')
 #df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_02.csv')
 #df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_03.csv')
-df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_04.csv')
+#df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_04.csv')
+#df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_01_01.csv')
+#df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_02_01.csv')
+df.to_csv(r'/Users/rcole/Desktop/imacgration/lfn/games_03_01.csv')
         
