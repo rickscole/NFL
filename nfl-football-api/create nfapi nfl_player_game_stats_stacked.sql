@@ -34,7 +34,7 @@ union select c.player_id, c.game_id, stat_type = case when c.stat_type = 'C/ATT'
 ) d where d.value is not null
 
 
-
+delete from [temp].[nfl_nfapi_player_game_stats_stacked]
 
 -- postdrop tables
 if object_id('temp.nfl_nfapi_player_game_stats_stacked_01', 'U') is not null
