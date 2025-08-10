@@ -13,7 +13,7 @@ import json
 conn = http.client.HTTPSConnection("nfl-football-api.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "16b08d3c3emshba4d425ac4bc9a9p1e6e4cjsn0b14d9c5bece",
+    'x-rapidapi-key': "",
     'x-rapidapi-host': "nfl-football-api.p.rapidapi.com"
 }
 
