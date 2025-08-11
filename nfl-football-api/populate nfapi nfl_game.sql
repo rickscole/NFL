@@ -3,6 +3,7 @@ select
 sysdatetime()
 , external_id 
 , season
+, season_type
 , home_team  = case 
 when charindex('@', matchup) > 0 then substring(matchup, charindex('@', matchup) + 2, len(matchup)) -- away
 when charindex('VS', matchup) > 0 then substring(matchup, charindex('VS', matchup) + 3, len(matchup)) -- home
@@ -14,4 +15,5 @@ when charindex('VS', matchup) > 0 then substring(matchup, 1, charindex('VS', mat
 else 'other'
 end
 from temp.nfl_game
+
 
